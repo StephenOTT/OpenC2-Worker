@@ -1,13 +1,20 @@
 package io.digitalstate.openc2.worker.tcp;
 
-import io.vertx.core.json.JsonObject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Map;
 
 public class TcpMessage {
 
     private final String address;
-    private final JsonObject message;
+    private final Map<String, Object> message;
 
-    public TcpMessage(String address, JsonObject message) {
+    @JsonCreator
+    public TcpMessage(
+            @JsonProperty("address") String address,
+            @JsonProperty("message") Map<String, Object> message) {
+
         this.address = address;
         this.message = message;
     }
@@ -16,7 +23,15 @@ public class TcpMessage {
         return address;
     }
 
-    public JsonObject getMessage() {
+    public Map<String, Object> getMessage() {
         return message;
+    }
+
+    @Override
+    public String toString() {
+        return "TcpMessage{" +
+                "address='" + address + '\'' +
+                ", message=" + message +
+                '}';
     }
 }

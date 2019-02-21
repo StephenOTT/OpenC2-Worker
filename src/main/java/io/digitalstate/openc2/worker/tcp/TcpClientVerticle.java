@@ -3,6 +3,7 @@ package io.digitalstate.openc2.worker.tcp;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.Json;
 import io.vertx.core.net.NetClient;
 import io.vertx.core.net.NetClientOptions;
@@ -41,6 +42,8 @@ public class TcpClientVerticle extends AbstractVerticle {
         NetClient tcpClient = vertx.createNetClient(tcpClientOptions);
 
         tcpClient.connect(port, host, res -> {
+            //@TODO Add a Unique ID to identify the Client so the Server can find this client again
+
             if (res.succeeded()) {
                 logger.info("Connected to TCP server: " + res.result().remoteAddress());
 
@@ -51,14 +54,16 @@ public class TcpClientVerticle extends AbstractVerticle {
 
                     logger.info("Received message from TCP server: " + sourceAddress);
                     try {
-                        TcpMessage message = Json.decodeValue(data, TcpMessage.class);
+                        TcpMessage message = Json.decodeValue(data.toString(), TcpMessage.class);
+
+                        logger.info("Received Message: " + message.toString());
 
                         DeliveryOptions dataDeliveryOpts = new DeliveryOptions()
                                 .addHeader("source-tcp-server", sourceAddress);
 
                         vertx.eventBus().publish(message.getAddress(), message.getMessage(), dataDeliveryOpts);
 
-                    } catch (IllegalArgumentException e){
+                    } catch (DecodeException e) {
                         logger.error("Unable to parse data received from TCP server: " + sourceAddress, e);
                     }
                 });
