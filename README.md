@@ -2,6 +2,14 @@
 
 Also see: [OpenC2-Orchestrator](https://github.com/StephenOTT/OpenC2-Orchestrator)
 
+![design](./docs/design/openc2-design.png)
+
+
+# Deploy
+
+`java -jar openc2-worker-v0.1.jar`
+
+
 # Notes
 
 Launcher Config:
