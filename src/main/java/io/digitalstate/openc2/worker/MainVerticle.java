@@ -17,12 +17,10 @@ public class MainVerticle extends AbstractVerticle {
 
         startFuture.complete();
         logger.info("OpenC2 Worker Main Verticle has started");
-
         startTcpClient();
-
     }
 
-    public void startTcpClient(){
+    private void startTcpClient(){
         DeploymentOptions options = new DeploymentOptions();
         vertx.deployVerticle(TcpClientVerticle.class, options, res ->{
             if (res.failed()){
