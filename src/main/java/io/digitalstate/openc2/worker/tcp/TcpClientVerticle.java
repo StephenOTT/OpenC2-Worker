@@ -54,12 +54,13 @@ public class TcpClientVerticle extends AbstractVerticle {
 
                     logger.info("Received message from TCP server: " + sourceAddress);
                     try {
-                        TcpMessage message = Json.decodeValue(data.toString(), TcpMessage.class);
+                        TcpMessage message = Json.decodeValue(data, TcpMessage.class);
 
                         logger.info("Received Message: " + message.toString());
 
                         DeliveryOptions dataDeliveryOpts = new DeliveryOptions()
-                                .addHeader("source-tcp-server", sourceAddress);
+                                .addHeader("source-server", sourceAddress)
+                                .addHeader("source-handlerId", socket.writeHandlerID());
 
                         vertx.eventBus().publish(message.getAddress(), message.getMessage(), dataDeliveryOpts);
 
